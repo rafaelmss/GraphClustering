@@ -1,0 +1,10 @@
+|Total of nodes|300|Time to run|42836|Num. of partitions|2|Cut weight|24|GCC Medium|0,06|LCC Medium|0,09|Num vertex in part 1|150|Num vertex in part 2|150
+|Total of nodes|300|Time to run|41323|Num. of partitions|2|Cut weight|18|GCC Medium|0,07|LCC Medium|0,09|Num vertex in part 1|150|Num vertex in part 2|150
+|Total of nodes|300|Time to run|41977|Num. of partitions|2|Cut weight|18|GCC Medium|0,07|LCC Medium|0,09|Num vertex in part 1|150|Num vertex in part 2|150
+|Total of nodes|300|Time to run|40741|Num. of partitions|2|Cut weight|444|GCC Medium|0,08|LCC Medium|0,14|Num vertex in part 1|150|Num vertex in part 2|150
+|Total of nodes|300|Time to run|41544|Num. of partitions|2|Cut weight|29|GCC Medium|0,06|LCC Medium|0,09|Num vertex in part 1|150|Num vertex in part 2|150
+|Total of nodes|300|Time to run|41213|Num. of partitions|2|Cut weight|21|GCC Medium|0,06|LCC Medium|0,09|Num vertex in part 1|150|Num vertex in part 2|150
+|Total of nodes|300|Time to run|40500|Num. of partitions|2|Cut weight|34|GCC Medium|0,07|LCC Medium|0,09|Num vertex in part 1|150|Num vertex in part 2|150
+|Total of nodes|300|Time to run|40456|Num. of partitions|2|Cut weight|16|GCC Medium|0,06|LCC Medium|0,08|Num vertex in part 1|150|Num vertex in part 2|150
+|Total of nodes|300|Time to run|37420|Num. of partitions|2|Cut weight|417|GCC Medium|0,08|LCC Medium|0,12|Num vertex in part 1|150|Num vertex in part 2|150
+|Total of nodes|300|Time to run|36660|Num. of partitions|2|Cut weight|458|GCC Medium|0,09|LCC Medium|0,15|Num vertex in part 1|150|Num vertex in part 2|150

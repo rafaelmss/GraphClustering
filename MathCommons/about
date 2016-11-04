@@ -1,0 +1,4 @@
+Esta vrsão possui a implementação de 3 métodos espectrais, sendo um deles o de clusterização
+por meio do autovetor denominado Vetor de Fiedler. Este apreenta 4 métodos diferentes de bipartisão.
+
+como implementações auxiliáres, foram elaboradas matrizes em arquvio e Colt.

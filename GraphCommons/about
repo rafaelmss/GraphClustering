@@ -1,0 +1,3 @@
+Este módulo possui a implementacão abstrata do grafo e as seguintes generalizações:
+
+- Grafo em Neo4j

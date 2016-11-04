@@ -1,0 +1,32 @@
+Esta versão possui as implementações de particionamento de grafos seguintes:
+
+	Espectral
+	-> Vetor de Fiedler com pivot em zero
+	-> Vetor de Fiedler com pivot em valor médio
+	-> Vetor de Fiedler com pivot em valor mediano
+	-> Vetor de Fiedler com pivot em máxima distância
+	-> Algorítmo de Ng-Jordan-Weiss
+	-> Algorítmo UKMeans
+
+	Aglomerativo
+	-> Distância Average Link
+	-> Distância Single Link 
+	-> Distância complete Link
+
+	Clássicos
+	-> Algorítmo de Kernighan-Lin
+	-> Algorítmo de Fiduccia-Mattheyses
+
+	Aglomerativo
+	-> Algorítmo de Louvain
+	-> Emparelhamento randômico 
+	-> Emparelhamento por aresta leve
+	-> Emparelhamento por aresta pesada
+
+	Gusolo
+	-> Algorítmo guloso padrão
+	-> Algorítmo guloso MinMax
+	-> Algorítmo guloso Diff
+	-> Algorítmo guloso k-way
+
+
