@@ -53,8 +53,8 @@ public class MainTest {
         //view.displayGraph();
 
         List<Boolean> enables = new ArrayList<>();
-        enables.add(false); //CompleteLinkCommunityDetector
-        enables.add(false); //SingleLinkCommunityDetector
+        enables.add(true); //CompleteLinkCommunityDetector
+        enables.add(true); //SingleLinkCommunityDetector
         enables.add(true); //AverageLinkCommunityDetector
         enables.add(false); //FiducciaMattheysesCommunityDetector
         enables.add(false); //KernighanLinCommunityDetector

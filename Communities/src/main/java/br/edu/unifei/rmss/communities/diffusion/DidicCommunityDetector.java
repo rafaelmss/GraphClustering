@@ -10,6 +10,7 @@ import br.edu.unifei.rmss.graph.Network;
 import br.edu.unifei.rmss.graph.Vertex;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -39,7 +40,9 @@ public class DidicCommunityDetector extends CommunityDetector{
     
     @Override
     public void compute() {
-		
+	
+        initPartitions();
+        
         initLoadVectorsAll();
 
         for (int timeStep = 0; timeStep < maxIterations; timeStep++) {
@@ -152,6 +155,15 @@ public class DidicCommunityDetector extends CommunityDetector{
         }
     }
 
+    protected void initPartitions(){
+        
+        for (Vertex v : network.getAllVertex()) {
+            v.setPartition(1 + rng.nextInt(numClusters));
+            network.updateVertex(v);            
+        }
+        
+    }
+    
     protected void initLoadVectorsAll() {
         for (Vertex v : network.getAllVertex()) {
             int vPart = -1;
@@ -257,18 +269,6 @@ public class DidicCommunityDetector extends CommunityDetector{
         }
 
         return maxC;
-    }
-
-    // v possui no mínimo 1 vizinho na partição p
-    protected boolean intDegNotZero(Vertex v, int p) {
-        for (Vertex n: network.getNeighbor(v)) {
-            if (n.hasPartition()){
-                if ( p == n.getPartition()){
-                    return true;
-                }
-            }
-        }
-        return false;
     }
     
 }
