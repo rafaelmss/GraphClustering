@@ -42,8 +42,8 @@ public class MainTest {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
  
-        String type = "cluster";
-        String size = "400";
+        String type = "teste";
+        String size = "10";
 
         Network graph = new NetworkNeo4j(type + "_" + size, true);
         graph.loadFromFile(type + "_" + size + ".txt");
@@ -53,9 +53,9 @@ public class MainTest {
         //view.displayGraph();
 
         List<Boolean> enables = new ArrayList<>();
-        enables.add(true); //CompleteLinkCommunityDetector
-        enables.add(true); //SingleLinkCommunityDetector
-        enables.add(true); //AverageLinkCommunityDetector
+        enables.add(false); //CompleteLinkCommunityDetector
+        enables.add(false); //SingleLinkCommunityDetector
+        enables.add(false); //AverageLinkCommunityDetector
         enables.add(false); //FiducciaMattheysesCommunityDetector
         enables.add(false); //KernighanLinCommunityDetector
         enables.add(false); //BandedDiffusionCommunityDetector
@@ -68,7 +68,7 @@ public class MainTest {
         enables.add(false); //EigenCommunityDetector MEDIAN
         enables.add(false); //EigenCommunityDetector ZERO
         enables.add(false); //EigenCommunityDetector NJW
-        enables.add(false); //EigenCommunityDetector UKMeans
+        enables.add(true); //EigenCommunityDetector UKMeans
         enables.add(false); //DiffGreedyCommunityDetector
         enables.add(false); //KGreedyCommunityDetector
         enables.add(false); //MaxMinGreedyCommunityDetector
@@ -328,7 +328,7 @@ public class MainTest {
                     graph.resetPartitionAllNodes();
 
                     long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new NJWCommunityDetector(graph);
+                    CommunityDetector detector = new NJWCommunityDetector(graph, 2);
                     detector.compute();
                     delta = System.currentTimeMillis() - delta;
 
@@ -345,7 +345,7 @@ public class MainTest {
                     graph.resetPartitionAllNodes();
 
                     long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new UKMeansCommunityDetector(graph);
+                    CommunityDetector detector = new UKMeansCommunityDetector(graph, 2);
                     detector.compute();
                     delta = System.currentTimeMillis() - delta;
 

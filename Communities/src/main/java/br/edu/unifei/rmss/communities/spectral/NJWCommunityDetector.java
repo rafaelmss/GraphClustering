@@ -26,12 +26,12 @@ public class NJWCommunityDetector extends SpectralCommunityDetector {
     private int K;
 
     public NJWCommunityDetector(Network network) {
-        this(network, (int) Math.sqrt(network.getNumberOfNodes()));
+        this(network, 2);
     }
 
     public NJWCommunityDetector(Network network, int clusters) {
         super(network, "NJW");
-        K = clusters > 0 ? clusters : 1;
+        K = clusters > 0 ? clusters : 2;
     }
 
     @Override

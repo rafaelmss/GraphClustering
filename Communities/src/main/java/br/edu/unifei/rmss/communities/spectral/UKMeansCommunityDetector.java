@@ -26,7 +26,7 @@ public class UKMeansCommunityDetector extends SpectralCommunityDetector {
     private int K;
 
     public UKMeansCommunityDetector(Network network) {
-        this(network, (int) Math.sqrt(network.getNumberOfNodes()));
+        this(network, 2);
     }
 
     public UKMeansCommunityDetector(Network network, int clusters) {
