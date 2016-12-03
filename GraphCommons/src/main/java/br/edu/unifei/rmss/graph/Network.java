@@ -305,6 +305,8 @@ public abstract class Network {
             dir.mkdirs(); 
         }
 
+        StringBuffer gen = new StringBuffer();
+        
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd-HH:mm:ss");
         StringBuffer bf = new StringBuffer();
         bf.append("|Total of nodes|" + this.getNumberOfNodes()
@@ -314,10 +316,22 @@ public abstract class Network {
                 + "|GCC Medium|" + String.format("%.2f", this.getGCC())
                 + "|LCC Medium|" + String.format("%.2f", this.getLCC()));
 
+        gen.append(timeSpent+"|" + 
+                this.getNumberOfPartitions() + "|" + 
+                this.getCutWeight() + "|" +
+                String.format("%.2f", this.getGCC()) + "|" +
+                String.format("%.2f", this.getLCC()) + "|" + "|" + "|");
+        
+        boolean gen_num = true;
         for (Iterator it = getPartitions(); it.hasNext();) {
             int part = (int) it.next();
             int count = IteratorUtil.count(getPartitionVertex(part));
             bf.append("|Num vertex in part "+part+"|"+count);
+            if (gen_num) {
+                gen_num = false;
+                gen.append(count);
+                gen.append("\n");
+            }            
         }
         bf.append("\n");
 
@@ -325,6 +339,10 @@ public abstract class Network {
             FileOutputStream fos = new FileOutputStream(dir.getAbsolutePath()+"/"+fileName, true);
             fos.write(bf.toString().getBytes());
             fos.close();
+                        
+            FileOutputStream fosGen = new FileOutputStream(dir.getAbsolutePath()+"/general.txt", true);
+            fosGen.write(gen.toString().getBytes());
+            fosGen.close();
         } catch (Exception e) {
             System.err.println("Erro ao gerar Arquivo");
         }

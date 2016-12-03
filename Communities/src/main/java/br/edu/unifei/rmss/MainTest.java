@@ -15,7 +15,8 @@ import br.edu.unifei.rmss.communities.greedy.DiffGreedyCommunityDetector;
 import br.edu.unifei.rmss.communities.greedy.KGreedyCommunityDetector;
 import br.edu.unifei.rmss.communities.greedy.MaxMinGreedyCommunityDetector;
 import br.edu.unifei.rmss.communities.greedy.StandardGreedyCommunityDetector;
-import br.edu.unifei.rmss.communities.multilevel.BandedDiffusionCommunityDetector;
+import br.edu.unifei.rmss.communities.diffusion.BandedDiffusionCommunityDetector;
+import br.edu.unifei.rmss.communities.diffusion.DidicCommunityDetector;
 import br.edu.unifei.rmss.communities.multilevel.HeavyEdgePairingCommunityDetector;
 import br.edu.unifei.rmss.communities.multilevel.LightEdgePairingCommunityDetector;
 import br.edu.unifei.rmss.communities.multilevel.LouvainCommunityDetector;
@@ -42,8 +43,8 @@ public class MainTest {
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
  
-        String type = "teste";
-        String size = "10";
+        String type = "cluster";
+        String size = "100";
 
         Network graph = new NetworkNeo4j(type + "_" + size, true);
         graph.loadFromFile(type + "_" + size + ".txt");
@@ -53,26 +54,27 @@ public class MainTest {
         //view.displayGraph();
 
         List<Boolean> enables = new ArrayList<>();
+        enables.add(false); //AverageLinkCommunityDetector
         enables.add(false); //CompleteLinkCommunityDetector
         enables.add(false); //SingleLinkCommunityDetector
-        enables.add(false); //AverageLinkCommunityDetector
-        enables.add(false); //FiducciaMattheysesCommunityDetector
         enables.add(false); //KernighanLinCommunityDetector
-        enables.add(false); //BandedDiffusionCommunityDetector
-        enables.add(false); //HeavyEdgePairingCommunityDetector                   error mem leaky
+        enables.add(false); //FiducciaMattheysesCommunityDetector
+        enables.add(false); //StandardGreedyCommunityDetector
+        enables.add(false); //DiffGreedyCommunityDetector
+        enables.add(false); //MaxMinGreedyCommunityDetector
+        enables.add(false); //KGreedyCommunityDetector
         enables.add(false); //LightEdgePairingCommunityDetector
-        enables.add(false); //LouvainCommunityDetector
+        enables.add(false); //HeavyEdgePairingCommunityDetector                  
         enables.add(false); //RandomPairingCommunityDetector
+        enables.add(false); //LouvainCommunityDetector
+        enables.add(false); //BandedDiffusionCommunityDetector
+        enables.add(false); //DidicCommunityDetector
+        enables.add(false); //EigenCommunityDetector ZERO
+        enables.add(false); //EigenCommunityDetector MEDIAN
         enables.add(false); //EigenCommunityDetector AVG
         enables.add(false); //EigenCommunityDetector GAP
-        enables.add(false); //EigenCommunityDetector MEDIAN
-        enables.add(false); //EigenCommunityDetector ZERO
-        enables.add(false); //EigenCommunityDetector NJW
         enables.add(true); //EigenCommunityDetector UKMeans
-        enables.add(false); //DiffGreedyCommunityDetector
-        enables.add(false); //KGreedyCommunityDetector
-        enables.add(false); //MaxMinGreedyCommunityDetector
-        enables.add(false); //StandardGreedyCommunityDetector
+        enables.add(false); //EigenCommunityDetector NJW
 
 
         boolean start = false;
@@ -83,8 +85,25 @@ public class MainTest {
             }
         }
         if (start) {
-
+            
             if (enables.get(0)) {
+                System.out.println("Algoritmo: AverageLinkCommunityDetector");
+                for (int i = 0; i < 10; i++) {
+                    graph.resetPartitionAllNodes();
+
+                    long delta = System.currentTimeMillis();
+                    CommunityDetector detector = new AverageLinkCommunityDetector(graph);
+                    detector.compute();
+                    delta = System.currentTimeMillis() - delta;
+
+                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
+                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
+                    //graph.exportPartition("result_teste_10.txt", delta);
+
+                }
+            }
+
+            if (enables.get(1)) {
                 System.out.println("Algoritmo: CompleteLinkCommunityDetector");
                 for (int i = 0; i < 10; i++) {
                     graph.resetPartitionAllNodes();
@@ -101,7 +120,7 @@ public class MainTest {
                 }
             }
 
-            if (enables.get(1)) {
+            if (enables.get(2)) {
                 System.out.println("Algoritmo: SingleLinkCommunityDetector");
                 for (int i = 0; i < 10; i++) {
                     graph.resetPartitionAllNodes();
@@ -117,14 +136,14 @@ public class MainTest {
 
                 }
             }
-            
-            if (enables.get(2)) {
-                System.out.println("Algoritmo: AverageLinkCommunityDetector");
+
+            if (enables.get(3)) {
+                System.out.println("Algoritmo: KernighanLinCommunityDetector");
                 for (int i = 0; i < 10; i++) {
                     graph.resetPartitionAllNodes();
 
                     long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new AverageLinkCommunityDetector(graph);
+                    CommunityDetector detector = new KernighanLinCommunityDetector(graph);
                     detector.compute();
                     delta = System.currentTimeMillis() - delta;
 
@@ -135,7 +154,7 @@ public class MainTest {
                 }
             }
             
-            if (enables.get(3)) {
+            if (enables.get(4)) {
                 System.out.println("Algoritmo: FiducciaMattheysesCommunityDetector");
                 for (int i = 0; i < 10; i++) {
                     graph.resetPartitionAllNodes();
@@ -152,30 +171,13 @@ public class MainTest {
                 }
             }
 
-            if (enables.get(4)) {
-                System.out.println("Algoritmo: KernighanLinCommunityDetector");
-                for (int i = 0; i < 10; i++) {
-                    graph.resetPartitionAllNodes();
-
-                    long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new KernighanLinCommunityDetector(graph);
-                    detector.compute();
-                    delta = System.currentTimeMillis() - delta;
-
-                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
-                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
-                    //graph.exportPartition("result_teste_10.txt", delta);
-
-                }
-            }
-
             if (enables.get(5)) {
-                System.out.println("Algoritmo: BandedDiffusionCommunityDetector");
+                System.out.println("Algoritmo: StandardGreedyCommunityDetector");
                 for (int i = 0; i < 10; i++) {
                     graph.resetPartitionAllNodes();
 
                     long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new BandedDiffusionCommunityDetector(graph);
+                    CommunityDetector detector = new StandardGreedyCommunityDetector(graph);
                     detector.compute();
                     delta = System.currentTimeMillis() - delta;
 
@@ -187,176 +189,6 @@ public class MainTest {
             }
 
             if (enables.get(6)) {
-                System.out.println("Algoritmo: HeavyEdgePairingCommunityDetector");
-                for (int i = 0; i < 10; i++) {
-                    graph.resetPartitionAllNodes();
-
-                    long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new HeavyEdgePairingCommunityDetector(graph);
-                    detector.compute();
-                    delta = System.currentTimeMillis() - delta;
-
-                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
-                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
-                    //graph.exportPartition("result_teste_10.txt", delta);
-
-                }
-            }
-
-            if (enables.get(7)) {
-                System.out.println("Algoritmo: LightEdgePairingCommunityDetector");
-                for (int i = 0; i < 10; i++) {
-                    graph.resetPartitionAllNodes();
-
-                    long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new LightEdgePairingCommunityDetector(graph);
-                    detector.compute();
-                    delta = System.currentTimeMillis() - delta;
-
-                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
-                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
-                    //graph.exportPartition("result_teste_10.txt", delta);
-
-                }
-            }
-
-            if (enables.get(8)) {
-                System.out.println("Algoritmo: LouvainCommunityDetector");
-                for (int i = 0; i < 10; i++) {
-                    graph.resetPartitionAllNodes();
-
-                    long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new LouvainCommunityDetector(graph);
-                    detector.compute();
-                    delta = System.currentTimeMillis() - delta;
-
-                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
-                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
-                    //graph.exportPartition("result_teste_10.txt", delta);
-
-                }
-            }
-
-            if (enables.get(9)) {
-                System.out.println("Algoritmo: RandomPairingCommunityDetector");
-                for (int i = 0; i < 10; i++) {
-                    graph.resetPartitionAllNodes();
-
-                    long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new RandomPairingCommunityDetector(graph);
-                    detector.compute();
-                    delta = System.currentTimeMillis() - delta;
-
-                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
-                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
-                    //graph.exportPartition("result_teste_10.txt", delta);
-
-                }
-            }
-
-            if (enables.get(10)) {
-                System.out.println("Algoritmo: EigenCommunityDetector AVG");
-                for (int i = 0; i < 10; i++) {
-                    graph.resetPartitionAllNodes();
-
-                    long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new EigenCommunityDetector(graph, EigenCommunityDetector.ThresholdType.AVG);
-                    detector.compute();
-                    delta = System.currentTimeMillis() - delta;
-
-                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
-                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
-                    //graph.exportPartition("result_teste_10.txt", delta);
-
-                }
-            }
-
-            if (enables.get(11)) {
-                System.out.println("Algoritmo: EigenCommunityDetector GAP");
-                for (int i = 0; i < 10; i++) {
-                    graph.resetPartitionAllNodes();
-
-                    long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new EigenCommunityDetector(graph, EigenCommunityDetector.ThresholdType.GAP);
-                    detector.compute();
-                    delta = System.currentTimeMillis() - delta;
-
-                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
-                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
-                    //graph.exportPartition("result_teste_10.txt", delta);
-
-                }
-            }
-
-            if (enables.get(12)) {
-                System.out.println("Algoritmo: EigenCommunityDetector MEDIAN");
-                for (int i = 0; i < 10; i++) {
-                    graph.resetPartitionAllNodes();
-
-                    long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new EigenCommunityDetector(graph, EigenCommunityDetector.ThresholdType.MEDIAN);
-                    detector.compute();
-                    delta = System.currentTimeMillis() - delta;
-
-                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
-                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
-                    //graph.exportPartition("result_teste_10.txt", delta);
-
-                }
-            }
-
-            if (enables.get(13)) {
-                System.out.println("Algoritmo: EigenCommunityDetector ZERO");
-                for (int i = 0; i < 10; i++) {
-                    graph.resetPartitionAllNodes();
-
-                    long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new EigenCommunityDetector(graph, EigenCommunityDetector.ThresholdType.ZERO);
-                    detector.compute();
-                    delta = System.currentTimeMillis() - delta;
-
-                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
-                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
-                    //graph.exportPartition("result_teste_10.txt", delta);
-
-                }
-            }
-
-            if (enables.get(14)) {
-                System.out.println("Algoritmo: EigenCommunityDetector NJW");
-                for (int i = 0; i < 10; i++) {
-                    graph.resetPartitionAllNodes();
-
-                    long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new NJWCommunityDetector(graph, 2);
-                    detector.compute();
-                    delta = System.currentTimeMillis() - delta;
-
-                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
-                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
-                    //graph.exportPartition("result_teste_10.txt", delta);
-
-                }
-            }
-
-            if (enables.get(15)) {
-                System.out.println("Algoritmo: EigenCommunityDetector UKMeans");
-                for (int i = 0; i < 10; i++) {
-                    graph.resetPartitionAllNodes();
-
-                    long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new UKMeansCommunityDetector(graph, 2);
-                    detector.compute();
-                    delta = System.currentTimeMillis() - delta;
-
-                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
-                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
-                    //graph.exportPartition("result_teste_10.txt", delta);
-
-                }
-            }
-
-            if (enables.get(16)) {
                 System.out.println("Algoritmo: DiffGreedyCommunityDetector");
                 for (int i = 0; i < 10; i++) {
                     graph.resetPartitionAllNodes();
@@ -373,24 +205,7 @@ public class MainTest {
                 }
             }
 
-            if (enables.get(17)) {
-                System.out.println("Algoritmo: KGreedyCommunityDetector");
-                for (int i = 0; i < 10; i++) {
-                    graph.resetPartitionAllNodes();
-
-                    long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new KGreedyCommunityDetector(graph);
-                    detector.compute();
-                    delta = System.currentTimeMillis() - delta;
-
-                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
-                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
-                    //graph.exportPartition("result_teste_10.txt", delta);
-
-                }
-            }
-
-            if (enables.get(18)) {
+            if (enables.get(7)) {
                 System.out.println("Algoritmo: MaxMinGreedyCommunityDetector");
                 for (int i = 0; i < 10; i++) {
                     graph.resetPartitionAllNodes();
@@ -407,13 +222,217 @@ public class MainTest {
                 }
             }
 
-            if (enables.get(19)) {
-                System.out.println("Algoritmo: StandardGreedyCommunityDetector");
+            if (enables.get(8)) {
+                System.out.println("Algoritmo: KGreedyCommunityDetector");
                 for (int i = 0; i < 10; i++) {
                     graph.resetPartitionAllNodes();
 
                     long delta = System.currentTimeMillis();
-                    CommunityDetector detector = new StandardGreedyCommunityDetector(graph);
+                    CommunityDetector detector = new KGreedyCommunityDetector(graph);
+                    detector.compute();
+                    delta = System.currentTimeMillis() - delta;
+
+                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
+                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
+                    //graph.exportPartition("result_teste_10.txt", delta);
+
+                }
+            }
+
+            if (enables.get(9)) {
+                System.out.println("Algoritmo: LightEdgePairingCommunityDetector");
+                for (int i = 0; i < 10; i++) {
+                    graph.resetPartitionAllNodes();
+
+                    long delta = System.currentTimeMillis();
+                    CommunityDetector detector = new LightEdgePairingCommunityDetector(graph);
+                    detector.compute();
+                    delta = System.currentTimeMillis() - delta;
+
+                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
+                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
+                    //graph.exportPartition("result_teste_10.txt", delta);
+
+                }
+            }
+
+            if (enables.get(10)) {
+                System.out.println("Algoritmo: HeavyEdgePairingCommunityDetector");
+                for (int i = 0; i < 10; i++) {
+                    graph.resetPartitionAllNodes();
+
+                    long delta = System.currentTimeMillis();
+                    CommunityDetector detector = new HeavyEdgePairingCommunityDetector(graph);
+                    detector.compute();
+                    delta = System.currentTimeMillis() - delta;
+
+                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
+                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
+                    //graph.exportPartition("result_teste_10.txt", delta);
+
+                }
+            }
+
+            if (enables.get(11)) {
+                System.out.println("Algoritmo: RandomPairingCommunityDetector");
+                for (int i = 0; i < 10; i++) {
+                    graph.resetPartitionAllNodes();
+
+                    long delta = System.currentTimeMillis();
+                    CommunityDetector detector = new RandomPairingCommunityDetector(graph);
+                    detector.compute();
+                    delta = System.currentTimeMillis() - delta;
+
+                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
+                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
+                    //graph.exportPartition("result_teste_10.txt", delta);
+
+                }
+            }
+
+            if (enables.get(12)) {
+                System.out.println("Algoritmo: LouvainCommunityDetector");
+                for (int i = 0; i < 10; i++) {
+                    graph.resetPartitionAllNodes();
+
+                    long delta = System.currentTimeMillis();
+                    CommunityDetector detector = new LouvainCommunityDetector(graph);
+                    detector.compute();
+                    delta = System.currentTimeMillis() - delta;
+
+                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
+                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
+                    //graph.exportPartition("result_teste_10.txt", delta);
+
+                }
+            }
+
+            if (enables.get(13)) {
+                System.out.println("Algoritmo: BandedDiffusionCommunityDetector");
+                for (int i = 0; i < 10; i++) {
+                    graph.resetPartitionAllNodes();
+
+                    long delta = System.currentTimeMillis();
+                    CommunityDetector detector = new BandedDiffusionCommunityDetector(graph);
+                    detector.compute();
+                    delta = System.currentTimeMillis() - delta;
+
+                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
+                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
+                    //graph.exportPartition("result_teste_10.txt", delta);
+
+                }
+            }
+
+            if (enables.get(14)) {
+                System.out.println("Algoritmo: DidicCommunityDetector");
+                for (int i = 0; i < 10; i++) {
+                    graph.resetPartitionAllNodes();
+
+                    long delta = System.currentTimeMillis();
+                    CommunityDetector detector = new DidicCommunityDetector(graph);
+                    detector.compute();
+                    delta = System.currentTimeMillis() - delta;
+
+                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
+                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
+                    //graph.exportPartition("result_teste_10.txt", delta);
+
+                }
+            }
+
+            if (enables.get(15)) {
+                System.out.println("Algoritmo: EigenCommunityDetector ZERO");
+                for (int i = 0; i < 10; i++) {
+                    graph.resetPartitionAllNodes();
+
+                    long delta = System.currentTimeMillis();
+                    CommunityDetector detector = new EigenCommunityDetector(graph, EigenCommunityDetector.ThresholdType.ZERO);
+                    detector.compute();
+                    delta = System.currentTimeMillis() - delta;
+
+                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
+                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
+                    //graph.exportPartition("result_teste_10.txt", delta);
+
+                }
+            }
+
+            if (enables.get(16)) {
+                System.out.println("Algoritmo: EigenCommunityDetector MEDIAN");
+                for (int i = 0; i < 10; i++) {
+                    graph.resetPartitionAllNodes();
+
+                    long delta = System.currentTimeMillis();
+                    CommunityDetector detector = new EigenCommunityDetector(graph, EigenCommunityDetector.ThresholdType.MEDIAN);
+                    detector.compute();
+                    delta = System.currentTimeMillis() - delta;
+
+                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
+                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
+                    //graph.exportPartition("result_teste_10.txt", delta);
+
+                }
+            }
+
+            if (enables.get(17)) {
+                System.out.println("Algoritmo: EigenCommunityDetector AVG");
+                for (int i = 0; i < 10; i++) {
+                    graph.resetPartitionAllNodes();
+
+                    long delta = System.currentTimeMillis();
+                    CommunityDetector detector = new EigenCommunityDetector(graph, EigenCommunityDetector.ThresholdType.AVG);
+                    detector.compute();
+                    delta = System.currentTimeMillis() - delta;
+
+                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
+                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
+                    //graph.exportPartition("result_teste_10.txt", delta);
+
+                }
+            }
+
+            if (enables.get(18)) {
+                System.out.println("Algoritmo: EigenCommunityDetector GAP");
+                for (int i = 0; i < 10; i++) {
+                    graph.resetPartitionAllNodes();
+
+                    long delta = System.currentTimeMillis();
+                    CommunityDetector detector = new EigenCommunityDetector(graph, EigenCommunityDetector.ThresholdType.GAP);
+                    detector.compute();
+                    delta = System.currentTimeMillis() - delta;
+
+                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
+                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
+                    //graph.exportPartition("result_teste_10.txt", delta);
+
+                }
+            }
+
+            if (enables.get(19)) {
+                System.out.println("Algoritmo: EigenCommunityDetector UKMeans");
+                for (int i = 0; i < 10; i++) {
+                    graph.resetPartitionAllNodes();
+
+                    long delta = System.currentTimeMillis();
+                    CommunityDetector detector = new UKMeansCommunityDetector(graph, 2);
+                    detector.compute();
+                    delta = System.currentTimeMillis() - delta;
+
+                    System.out.println((i + 1) + " - Grafo particionado em " + Math.abs(delta / 1000) + " segundos (" + Math.abs((delta / 1000) / 60) + " min) - (" + sdf.format(cal.getTime()) + ")");
+                    graph.exportPartition("RESULT_" + type + "_" + size + "_" + detector.getName() + ".txt", delta);
+                    //graph.exportPartition("result_teste_10.txt", delta);
+
+                }
+            }
+
+            if (enables.get(20)) {
+                System.out.println("Algoritmo: EigenCommunityDetector NJW");
+                for (int i = 0; i < 10; i++) {
+                    graph.resetPartitionAllNodes();
+
+                    long delta = System.currentTimeMillis();
+                    CommunityDetector detector = new NJWCommunityDetector(graph, 2);
                     detector.compute();
                     delta = System.currentTimeMillis() - delta;
 
